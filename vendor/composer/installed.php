@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => '5b14f57c9af53a9dfe5787a182dd4232989ea557',
+        'name' => 'malamalca/thorbell_rpi',
+        'dev' => true,
+    ),
+    'versions' => array(
+        'malamalca/thorbell_rpi' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => '5b14f57c9af53a9dfe5787a182dd4232989ea557',
+            'dev_requirement' => false,
+        ),
+        'nikic/fast-route' => array(
+            'pretty_version' => 'v1.3.0',
+            'version' => '1.3.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nikic/fast-route',
+            'aliases' => array(),
+            'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
+            'dev_requirement' => false,
+        ),
+        'piphp/gpio' => array(
+            'pretty_version' => '0.4.0',
+            'version' => '0.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../piphp/gpio',
+            'aliases' => array(),
+            'reference' => '9288aa1b56c7ca85b182bbfb5225313ca7354093',
+            'dev_requirement' => false,
+        ),
+    ),
+);
