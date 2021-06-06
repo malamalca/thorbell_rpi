@@ -7,43 +7,7 @@ use PiPHP\GPIO\Pin\InputPinInterface;
 define('PIN_BUTTON', 23);
 define('SOUND_FILE', dirname(dirname(__FILE__)) . '/resources/doorbell.wav');
 define('SNAPSHOT_URL', 'https://localhost:9090/stream/snapshot.jpeg');
-define('SNAPSHOT_TARGET_DIR', dirname(dirname(__FILE__)) . '/photos/');
 
-function sendApnPush()
-{
-    // GuzzleHttp\Client
-
-    $headers = [
-        "apns-topic: com.example.exampleapp",
-        "apns-push-type: alert",
-        "Content-Type: application/x-www-form-urlencoded",
-    ];
-
-    $certificate_file = "iosCertificates/apple-push-dev-certificate-with-key.pem";
-
-    $payloadArray['aps'] = [
-        'alert' => [
-            'title' => "Test Push Notification",
-            'body' => "Ohhh yeah working",
-        ],
-        'sound' => 'default',
-        'badge' => 1,
-
-    ];
-
-    $data = json_encode($payloadArray);
-
-    $client = new Client();
-
-    $response = $client->post($url, [
-        'headers' => $headers,
-        'cert' => $certificate_file,
-        'curl' => [
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_2_0,
-        ],
-        'body' => $data,
-    ]);
-}
 
 // Create a GPIO object
 $gpio = new GPIO();
@@ -65,7 +29,7 @@ $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
     $imageData = file_get_contents(SNAPSHOT_URL, false, stream_context_create($context));
 
     if ($imageData) {
-        file_put_contents(SNAPSHOT_TARGET_DIR . strftime('%Y%m%d%H%M%S', time()) . '.jpg', $imageData);
+        file_put_contents(PHOTOS . strftime('%Y%m%d%H%M%S', time()) . '.jpg', $imageData);
     }
 
     if ($value == 1) {

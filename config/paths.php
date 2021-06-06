@@ -45,3 +45,8 @@ define('TMP', ROOT . DS . 'tmp' . DS);
  * Path to the photos directory.
  */
 define('PHOTOS', ROOT . DS . 'photos' . DS);
+
+/**
+ * Path to certificates.
+ */
+define('CERTS', ROOT . DS . 'certs' . DS);

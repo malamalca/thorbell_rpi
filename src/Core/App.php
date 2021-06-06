@@ -3,8 +3,9 @@ namespace App\Core;
 
 class App
 {
-    private static $instance = null;
+    public static $allowedActions = ['Devices/pair'];
 
+    private static $instance = null;
     private $_vars = [];
 
     public static function getInstance()
@@ -26,7 +27,8 @@ class App
      */
     public static function dispatch($controllerName, $methodName, $vars)
     {
-        if (!self::isLoggedIn()) {
+        // redirect to login page when not logged in
+        if (!self::isLoggedIn() && !in_array($controllerName . '/' . $methodName, self::$allowedActions)) {
             $controllerName = 'Pages';
             $methodName = 'login';
         }
@@ -48,6 +50,9 @@ class App
     {
 
         $templatePath = TEMPLATES . $controllerName . DS;
+        if (self::isAjax()) {
+            $templatePath .= 'ajax' . DS;
+        }
         $templateFile = realpath($templatePath . $methodName . '.php');
 
         if (strpos($templateFile, $templatePath) !== 0 || strpos($templateFile, $templatePath) === false) {
@@ -62,11 +67,25 @@ class App
         $contents = ob_get_contents();
         ob_end_clean();
 
-        if (empty($title) && $title !== false) {
+        if (!isset($title)) {
             $title = $controllerName . '::' . $methodName;
         }
 
-        require(TEMPLATES . 'layouts' . DS . 'default.php');
+        if (self::isAjax()) {
+            require(TEMPLATES . 'layouts' . DS . 'ajax.php');
+        } else {
+            require(TEMPLATES . 'layouts' . DS . 'default.php');
+        }
+    }
+
+    /**
+     * Determines if request is ajax
+     * 
+     * @return bool
+     */
+    private static function isAjax()
+    {
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 
     /**
@@ -102,8 +121,10 @@ class App
 
     public static function redirect($dest)
     {
-        header('Location: ' . self::url($dest));
-        die;
+        if (!self::isAjax()) {
+            header('Location: ' . self::url($dest));
+            die;
+        }
     }
 
     public static function setFlash($msg, $code = 'success')

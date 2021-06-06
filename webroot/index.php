@@ -1,6 +1,6 @@
 <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', true);
+//error_reporting(E_ALL);
+//ini_set('display_errors', true);
 
 require dirname(__DIR__) . '/config/bootstrap.php';
 
@@ -8,12 +8,13 @@ use App\Core\App;
 use App\Core\Configure;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-    $r->addRoute(['GET', 'POST'], '/', ['Pages', 'index']);
+    $r->addRoute(['GET', 'POST'], '/', ['Pages', 'home']);
 
     $r->addRoute('GET', '/logout', ['Pages', 'logout']);
     $r->addRoute(['GET', 'POST'], '/login', ['Pages', 'login']);
     $r->addRoute(['GET', 'POST'], '/changepasswd', ['Pages', 'changePassword']);
     
+    $r->addRoute(['GET', 'POST'], '/devices', ['Devices', 'index']);
     $r->addRoute(['GET', 'POST'], '/devices/add', ['Devices', 'add']);
     $r->addRoute('GET', '/devices/delete/{id}', ['Devices', 'delete']);
     $r->addRoute('POST', '/devices/pair', ['Devices', 'pair']);

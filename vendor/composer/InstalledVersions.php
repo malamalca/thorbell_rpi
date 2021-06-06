@@ -20,11 +20,50 @@ use Composer\Semver\VersionParser;
 
 
 
-
-
 class InstalledVersions
 {
-private static $installed;
+private static $installed = array (
+  'root' => 
+  array (
+    'pretty_version' => 'dev-master',
+    'version' => 'dev-master',
+    'aliases' => 
+    array (
+    ),
+    'reference' => 'aa3399b4b1ebe5edb755a980b3528c9a0dee7c4f',
+    'name' => 'malamalca/thorbell_rpi',
+  ),
+  'versions' => 
+  array (
+    'malamalca/thorbell_rpi' => 
+    array (
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'aa3399b4b1ebe5edb755a980b3528c9a0dee7c4f',
+    ),
+    'nikic/fast-route' => 
+    array (
+      'pretty_version' => 'v1.3.0',
+      'version' => '1.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
+    ),
+    'piphp/gpio' => 
+    array (
+      'pretty_version' => '0.4.0',
+      'version' => '0.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9288aa1b56c7ca85b182bbfb5225313ca7354093',
+    ),
+  ),
+);
 private static $canGetVendors;
 private static $installedByVendor = array();
 
@@ -41,6 +80,7 @@ foreach (self::getInstalled() as $installed) {
 $packages[] = array_keys($installed['versions']);
 }
 
+
 if (1 === \count($packages)) {
 return $packages[0];
 }
@@ -55,40 +95,18 @@ return array_keys(array_flip(\call_user_func_array('array_merge', $packages)));
 
 
 
-public static function getInstalledPackagesByType($type)
-{
-$packagesByType = array();
 
-foreach (self::getInstalled() as $installed) {
-foreach ($installed['versions'] as $name => $package) {
-if (isset($package['type']) && $package['type'] === $type) {
-$packagesByType[] = $name;
-}
-}
-}
-
-return $packagesByType;
-}
-
-
-
-
-
-
-
-
-
-
-public static function isInstalled($packageName, $includeDevRequirements = true)
+public static function isInstalled($packageName)
 {
 foreach (self::getInstalled() as $installed) {
 if (isset($installed['versions'][$packageName])) {
-return $includeDevRequirements || empty($installed['versions'][$packageName]['dev_requirement']);
+return true;
 }
 }
 
 return false;
 }
+
 
 
 
@@ -213,23 +231,6 @@ throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed
 
 
 
-public static function getInstallPath($packageName)
-{
-foreach (self::getInstalled() as $installed) {
-if (!isset($installed['versions'][$packageName])) {
-continue;
-}
-
-return isset($installed['versions'][$packageName]['install_path']) ? $installed['versions'][$packageName]['install_path'] : null;
-}
-
-throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
-}
-
-
-
-
-
 public static function getRootPackage()
 {
 $installed = self::getInstalled();
@@ -243,27 +244,9 @@ return $installed[0]['root'];
 
 
 
-
 public static function getRawData()
 {
-@trigger_error('getRawData only returns the first dataset loaded, which may not be what you expect. Use getAllRawData() instead which returns all datasets for all autoloaders present in the process.', E_USER_DEPRECATED);
-
-if (null === self::$installed) {
-self::$installed = include __DIR__ . '/installed.php';
-}
-
 return self::$installed;
-}
-
-
-
-
-
-
-
-public static function getAllRawData()
-{
-return self::getInstalled();
 }
 
 
@@ -293,7 +276,6 @@ self::$installedByVendor = array();
 
 
 
-
 private static function getInstalled()
 {
 if (null === self::$canGetVendors) {
@@ -303,21 +285,16 @@ self::$canGetVendors = method_exists('Composer\Autoload\ClassLoader', 'getRegist
 $installed = array();
 
 if (self::$canGetVendors) {
+
 foreach (ClassLoader::getRegisteredLoaders() as $vendorDir => $loader) {
 if (isset(self::$installedByVendor[$vendorDir])) {
 $installed[] = self::$installedByVendor[$vendorDir];
 } elseif (is_file($vendorDir.'/composer/installed.php')) {
 $installed[] = self::$installedByVendor[$vendorDir] = require $vendorDir.'/composer/installed.php';
-if (null === self::$installed && strtr($vendorDir.'/composer', '\\', '/') === strtr(__DIR__, '\\', '/')) {
-self::$installed = $installed[count($installed) - 1];
-}
 }
 }
 }
 
-if (null === self::$installed) {
-self::$installed = require __DIR__ . '/installed.php';
-}
 $installed[] = self::$installed;
 
 return $installed;

@@ -1,7 +1,7 @@
 <?php
 namespace App\Core;
 
-use DB;
+use \App\Core\DB;
 
 class Table
 {
@@ -9,6 +9,8 @@ class Table
     public $tableName;
     public $fieldList = [];
     public $idField = 'id';
+
+    public $lastError;
 
     /**
      * Create new entity from data
@@ -19,10 +21,15 @@ class Table
     public function newEntity($data = [])
     {
         $entity = new $this->entityName();
-        foreach ($this->fieldList as $field) {
-            if (isset($data[$field])) {
-                $entity->{$field} = $data[$field];
+
+        if (is_array($data)) {
+            foreach ($this->fieldList as $field) {
+                if (isset($data[$field])) {
+                    $entity->{$field} = $data[$field];
+                }
             }
+        } else {
+            $entity->{$this->idField} = $data;
         }
 
         return $entity;
@@ -38,14 +45,18 @@ class Table
     {
         $pdo = DB::getInstance()->connect();
 
-        $stmt = $pdo->prepare('SELECT * FROM ' . $this->tableName . ' WHERE ' . $this->idField . '=:' . $this->idField);
+        $sql = 'SELECT * FROM ' . $this->tableName . ' WHERE ' . $this->idField . '=:' . $this->idField;
+        $stmt = $pdo->prepare($sql);
 
         $stmt->bindValue(':' . $this->idField, $id, \PDO::PARAM_STR);
 
-        if ($stmt->execute()) {
+        $result = $stmt->execute();
+        if ($result) {
             if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 return self::newEntity($row);
             }
+        } else {
+            $this->lastError = $stmt->errorInfo();
         }
 
         return null;
@@ -55,9 +66,10 @@ class Table
      * Save entity
      *
      * @param object $entity Entity object
+     * @param array $fieldFilter Specify fields to save. Save all if empty
      * @return bool
      */
-    public function save($entity)
+    public function save($entity, $fieldFilter = [])
     {
         $pdo = DB::getInstance()->connect();
 
@@ -68,20 +80,36 @@ class Table
                 // UPDATE statement
                 $fieldNameValue = '';
                 foreach ($this->fieldList as $field) {
-                    if ($field != $this->idField) {
-                        if ($fieldNameValue != '') {
-                            $fieldNameValue .= ', ';
-                        }
+                    if (empty($fieldFilter) || in_array($field, $fieldFilter)) {
+                        if ($field != $this->idField) {
+                            if ($fieldNameValue != '') {
+                                $fieldNameValue .= ', ';
+                            }
 
-                        $fieldNameValue .= $field . '=:' . $field;
+                            $fieldNameValue .= $field . '=:' . $field;
+                        }
                     }
                 }
 
                 $sql = 'UPDATE ' . $this->tableName . ' SET ' . $fieldNameValue . ' WHERE ' . $this->idField . '=:' . $this->idField;
             } else {
                 // INSERT statement
-                $fieldList = implode(', ', $this->fieldList);
-                $valuesList = ':' . implode(', :', $this->fieldList);
+                //$fieldList = implode(', ', $this->fieldList);
+                //$valuesList = ':' . implode(', :', $this->fieldList);
+                $fieldList = '';
+                $valuesList = '';
+
+                foreach ($this->fieldList as $field) {
+                    if (empty($fieldFilter) || in_array($field, $fieldFilter)) {
+                        if ($fieldList != '') {
+                            $fieldList .= ', ';
+                            $valuesList .= ', ';
+                        }
+
+                        $fieldList .= $field;
+                        $valuesList .= ':' . $field;
+                    }
+                }
 
                 $sql = 'INSERT INTO ' . $this->tableName . ' (' . $fieldList . ') VALUES (' . $valuesList . ')';
             }
@@ -89,7 +117,14 @@ class Table
             // prepare parameter values
             $stmt = $pdo->prepare($sql);
             foreach ($this->fieldList as $field) {
-                $stmt->bindValue(':' . $field, $entity->{$field});
+                if (empty($fieldFilter) || in_array($field, $fieldFilter)) {
+                    $stmt->bindValue(':' . $field, $entity->{$field});
+                }
+            }
+
+            // bind id field on update even if not specified in fieldlist
+            if (!empty($fieldFilter) && !in_array($this->idField, $fieldFilter) && $exists) {
+                $stmt->bindValue(':' . $this->idField, $entity->{$this->idField});
             }
 
             // execute query

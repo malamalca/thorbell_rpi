@@ -1,0 +1,1 @@
+<img src="https://localhost/stream/video.mjpeg" alt="image"  >

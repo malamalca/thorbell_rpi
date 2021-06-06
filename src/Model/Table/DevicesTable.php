@@ -20,7 +20,7 @@ class DevicesTable extends Table
     {
         $pdo = DB::getInstance()->connect();
 
-        $stmt = $pdo->query('SELECT id, title, token FROM devices ORDER BY title');
+        $stmt = $pdo->query('SELECT id, title, token FROM devices WHERE token IS NOT NULL ORDER BY title');
 
         $devices = [];
         if ($stmt) {
@@ -30,6 +30,22 @@ class DevicesTable extends Table
         }
 
         return $devices;
+    }
+
+    public function generatePairingDevice()
+    {
+        // clear all other temporary pairing devices
+        $pdo = DB::getInstance()->connect();
+        $pdo->exec('DELETE FROM devices WHERE token IS NULL');
+
+        $device = new Device();
+        $device->id = substr(uniqid(), -5);
+
+        if ($this->save($device, ['id'])) {
+            return $device;
+        }
+
+        return false;
     }
 
 }

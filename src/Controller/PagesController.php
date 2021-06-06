@@ -9,15 +9,14 @@ use App\Model\Table\SettingsTable;
 class PagesController
 {
     /**
-     * Index action
+     * Dashboard action
      *
      * @return void
      */
-    public function index()
+    public function home()
     {
-        $devices = (new DevicesTable())->getDevices();
-        App::set('devices', $devices);
     }
+
 
     private function getAdminPassword()
     {

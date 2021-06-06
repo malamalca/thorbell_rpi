@@ -17,31 +17,49 @@ class DevicesController {
     }
 
     /**
+     * Index action
+     *
+     * @return void
+     */
+    public function index()
+    {
+        $devices = $this->DevicesTable->getDevices();
+        App::set('devices', $devices);
+    }
+
+    /**
      * Add action
      *
      * @return void
      */
     public function add()
     {
-        $pairCode = $_SESSION['pairCode'] ?? substr(uniqid(), -5);
-        if (empty($_SESSION['pairCode'])) {
-            $_SESSION['pairCode'] = $pairCode;
+        if (empty($_SESSION['pairDevice'])) {
+            $_SESSION['pairDevice'] = $this->DevicesTable->generatePairingDevice();
         }
 
-        App::set('pairCode', $pairCode);
+        App::set('pairDevice', $_SESSION['pairDevice']);
+        
+    }
 
+    public function pair()
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!empty($_POST['id']) && $_POST['id'] == $pairCode) {
-                $device = $this->DevicesTable->newEntity($_POST);
+            $device = $this->DevicesTable->get($_POST['id']);
+            if (!empty($device) && !empty($_POST['token']) && !empty($_POST['title'])) {
+                $device->token = $_POST['token'];
+                $device->title = $_POST['title'];
 
                 if ($this->DevicesTable->save($device)) {
-                    unset($_SESSION['pairCode']);
+                    unset($_SESSION['pairDevice']);
+
                     App::setFlash('Success');
                     App::redirect('/');
                 }
             }
-            App::setFlash('Error', 'error');
+            
         }
+        App::setFlash('Error', 'error');
     }
 
     /**
