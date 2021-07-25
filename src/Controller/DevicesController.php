@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Core\App;
 use App\Core\Configure;
 use App\Model\Table\DevicesTable;
+use App\Model\Table\SettingsTable;
 
 class DevicesController {
     private $DevicesTable = null;
@@ -45,21 +46,32 @@ class DevicesController {
     public function pair()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $device = $this->DevicesTable->get($_POST['id']);
-            if (!empty($device) && !empty($_POST['token']) && !empty($_POST['title'])) {
-                $device->token = $_POST['token'];
-                $device->title = $_POST['title'];
+            if (!empty($_POST['id'])) {
+                $device = $this->DevicesTable->get($_POST['id']);
 
-                if ($this->DevicesTable->save($device)) {
-                    unset($_SESSION['pairDevice']);
+                if (!empty($device) && !empty($_POST['token']) && !empty($_POST['title'])) {
+                    $device->token = $_POST['token'];
+                    $device->title = $_POST['title'];
 
-                    App::setFlash('Success');
-                    App::redirect('/');
-                }
-            }
+                    if ($this->DevicesTable->save($device)) {
+                        // clear pair token
+                        $_SESSION['pairDevice'] = null;
+                        unset($_SESSION['pairDevice']);
+
+                        if (App::isAjax()) {
+                            header('Content-Type: application/json');
+                            die(sprintf('{"name": "%s"}', htmlspecialchars((new SettingsTable())->get('name')->value)));
+                        }
+                        
+                        App::setFlash('Success');
+                        App::redirect('/devices');
+                    }
+                }        
+            }   
             
+            http_response_code(404);
+            die('Invalid Pair Code');
         }
-        App::setFlash('Error', 'error');
     }
 
     /**
@@ -73,7 +85,7 @@ class DevicesController {
         $device = $this->DevicesTable->get($id);
         if ($this->DevicesTable->delete($device)) {
             App::setFlash('Device has been deleted.');
-            App::redirect('/');
+            App::redirect('/devices');
         } else {
             App::setFlash('Error Deleteing Device', 'error');
         }

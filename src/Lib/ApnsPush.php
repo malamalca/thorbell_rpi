@@ -10,14 +10,18 @@ class ApnsPush
     {
         if(defined('CURL_HTTP_VERSION_2_0'))
         {
-            $alert = sprintf('{"aps":{"alert":"%s","sound":"default"}}', json_encode($message));
+            //$alert = sprintf('{"aps":{"alert":"%s","sound":"default"}}', json_encode($message));
+            $alert = sprintf('{"aps":{"alert":"%s","sound":"default"}, "data": {"apn_call_name": "Alex1", "apn_call_id": "Alex123"}}', json_encode($message));
 
             $url = Configure::read('Apns.url') . $device_token;
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $alert);
             curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['apns-topic: ' . Configure::read('Apns.topic')]);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'apns-push-type: voip',
+                'apns-topic: ' . Configure::read('Apns.topic') . '.voip',
+            ]);
 
             curl_setopt($ch, CURLOPT_SSLCERT, Configure::read('Apns.certificate'));
             curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'P12');

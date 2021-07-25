@@ -1,6 +1,8 @@
 <?php
 namespace App\Core;
 
+use App\Model\Table\SettingsTable;
+
 class App
 {
     public static $allowedActions = ['Devices/pair'];
@@ -67,10 +69,14 @@ class App
         $contents = ob_get_contents();
         ob_end_clean();
 
+        // set default title
         if (!isset($title)) {
             $title = $controllerName . '::' . $methodName;
         }
 
+        $consoleName = ((new SettingsTable())->get('name', Configure::read('App.defaultName')))->value;
+
+        // output render data
         if (self::isAjax()) {
             require(TEMPLATES . 'layouts' . DS . 'ajax.php');
         } else {
@@ -83,9 +89,9 @@ class App
      * 
      * @return bool
      */
-    private static function isAjax()
+    public static function isAjax()
     {
-        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && in_array(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']), ['xmlhttprequest', 'thorbell']);
     }
 
     /**

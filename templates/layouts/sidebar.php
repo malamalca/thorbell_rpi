@@ -6,7 +6,7 @@
       <div class="float-left">
         <a href="#" id="close-sidebar" class="btn"><i class="fas fa-fw fa-times"></i></a>
       </div>
-      <span class="sidebar-header-title">Thorbell</span>
+      <span class="sidebar-header-title"><?= htmlspecialchars($consoleName) ?></span>
     </div>
     <section class="row">
       <ul class="column sidebar-nav">
@@ -32,7 +32,13 @@
           </a>
         </li>        
         <li class="nav-section-heading">
-          Settings
+          ADMIN
+        </li>
+        <li>
+          <a href="<?= App::url('/settings') ?>" class="hover-blue">
+            <i class="icon ion-md-settings"></i>
+            <span>Settings</span>
+          </a>
         </li>
         <li>
           <a href="<?= App::url('/changepasswd') ?>" class="hover-deep-orange">

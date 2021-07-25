@@ -1,4 +1,6 @@
 <?php
+use App\Core\App;
+
 $title = false;
 
 ?>
@@ -20,6 +22,10 @@ $title = false;
 
     <fieldset>
     <input class="button-primary" type="submit" value="Login">
+    </fieldset>
+
+    <fieldset>
+        <a href="<?= App::url('/resetpasswd') ?>">Forgot your password?</a>
     </fieldset>
 </form>
 

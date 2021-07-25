@@ -9,15 +9,18 @@ use App\Core\Configure;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->addRoute(['GET', 'POST'], '/', ['Pages', 'home']);
+    $r->addRoute(['GET', 'POST'], '/settings', ['Pages', 'settings']);
+
 
     $r->addRoute('GET', '/logout', ['Pages', 'logout']);
     $r->addRoute(['GET', 'POST'], '/login', ['Pages', 'login']);
     $r->addRoute(['GET', 'POST'], '/changepasswd', ['Pages', 'changePassword']);
+    $r->addRoute(['GET', 'POST'], '/resetpasswd', ['Pages', 'resetPassword']);
     
     $r->addRoute(['GET', 'POST'], '/devices', ['Devices', 'index']);
     $r->addRoute(['GET', 'POST'], '/devices/add', ['Devices', 'add']);
     $r->addRoute('GET', '/devices/delete/{id}', ['Devices', 'delete']);
-    $r->addRoute('POST', '/devices/pair', ['Devices', 'pair']);
+    $r->addRoute(['GET', 'POST'], '/devices/pair', ['Devices', 'pair']);
 
     $r->addRoute('GET', '/events', ['Events', 'index']);
     // {id} must be a number (\d+)

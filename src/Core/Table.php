@@ -63,6 +63,27 @@ class Table
     }
 
     /**
+     * Check if entity exists
+     *
+     * @param string $id Entity id
+     * @return bool
+     */
+    public function exists($id)
+    {
+        $pdo = DB::getInstance()->connect();
+
+        $sql = 'SELECT COUNT(id) AS cnt FROM ' . $this->tableName . ' WHERE ' . $this->idField . '=:' . $this->idField;
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindValue(':' . $this->idField, $id, \PDO::PARAM_STR);
+
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+
+        return ((int)$result > 0);
+    }
+
+    /**
      * Save entity
      *
      * @param object $entity Entity object
@@ -73,7 +94,7 @@ class Table
     {
         $pdo = DB::getInstance()->connect();
 
-        $exists = $this->get($entity->{$this->idField}) !== null;
+        $exists = $this->exists($entity->{$this->idField});
 
         try {
             if ($exists) {

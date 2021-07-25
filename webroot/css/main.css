@@ -358,3 +358,12 @@ body {
   from { top: 10px; }
   to { top: -70px; }
 }
+
+input.error {
+  border: 0.1rem solid #ff5722 !important;
+}
+
+div.error {
+  color: #ff5722;
+  font-size: 1.2rem;
+}

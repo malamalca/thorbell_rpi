@@ -8,6 +8,7 @@ return [
         'baseUrl' => '/www/thorbell_rpi',
         'db' => ROOT . DS . 'db' . DS . 'thorbell.sqlite',
         'defaultPassword' => 'admin',
+        'defaultName' => 'Thorbell Console',
     ],
 
     'Apns' => [
