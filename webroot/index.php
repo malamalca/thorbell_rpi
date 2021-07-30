@@ -9,24 +9,17 @@ use App\Core\Configure;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->addRoute(['GET', 'POST'], '/', ['Pages', 'home']);
-    $r->addRoute(['GET', 'POST'], '/settings', ['Pages', 'settings']);
-
-
-    $r->addRoute('GET', '/logout', ['Pages', 'logout']);
     $r->addRoute(['GET', 'POST'], '/login', ['Pages', 'login']);
+    $r->addRoute('GET',           '/logout', ['Pages', 'logout']);
+    $r->addRoute(['GET', 'POST'], '/settings', ['Pages', 'settings']);
     $r->addRoute(['GET', 'POST'], '/changepasswd', ['Pages', 'changePassword']);
     $r->addRoute(['GET', 'POST'], '/resetpasswd', ['Pages', 'resetPassword']);
-    
-    $r->addRoute(['GET', 'POST'], '/devices', ['Devices', 'index']);
-    $r->addRoute(['GET', 'POST'], '/devices/add', ['Devices', 'add']);
-    $r->addRoute('GET', '/devices/delete/{id}', ['Devices', 'delete']);
-    $r->addRoute(['GET', 'POST'], '/devices/pair', ['Devices', 'pair']);
 
-    $r->addRoute('GET', '/events', ['Events', 'index']);
-    // {id} must be a number (\d+)
-    //$r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
-    // The /{title} suffix is optional
-    //$r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+    $r->addRoute(['GET', 'POST'], '/video', ['Pages', 'video']);
+
+    $r->addRoute(['GET', 'POST'], '/devices[/{action}[/{param1}]]', 'Devices');
+    $r->addRoute(['GET', 'POST'], '/events[/{action}[/{param1}]]', 'Events');
+    $r->addRoute(['GET', 'POST'], '/pages[/{action}[/{param1}]]', 'Pages');
 });
 
 // Fetch method and URI from somewhere
@@ -58,9 +51,13 @@ switch ($routeInfo[0]) {
         echo "Route Not Allowed.\n";
         break;
     case FastRoute\Dispatcher::FOUND:
-        $className = $routeInfo[1][0];
-        $method = $routeInfo[1][1];
+        $controllerName = $routeInfo[1];
+        $vars = $routeInfo[2];
+        if (is_array($controllerName)) {
+            $controllerName = $routeInfo[1][0];
+            $vars['action'] = $routeInfo[1][1];
+        }
+        App::dispatch($controllerName, $vars);
 
-        App::dispatch($className, $method, $routeInfo[2]);
         break;
 }

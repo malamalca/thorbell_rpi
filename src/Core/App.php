@@ -10,6 +10,8 @@ class App
     private static $instance = null;
     private $_vars = [];
 
+    public $autoRender = true;
+
     public static function getInstance()
     {
         if (!self::$instance) {
@@ -27,8 +29,10 @@ class App
      * @param array $vars Variables
      * @return void
      */
-    public static function dispatch($controllerName, $methodName, $vars)
+    public static function dispatch($controllerName, $vars)
     {
+        $methodName = $vars['action'] ?? 'index';
+
         // redirect to login page when not logged in
         if (!self::isLoggedIn() && !in_array($controllerName . '/' . $methodName, self::$allowedActions)) {
             $controllerName = 'Pages';
@@ -36,11 +40,21 @@ class App
         }
 
         $controllerClass = 'App\Controller\\' . $controllerName . 'Controller';
+
+        // check if action exists
+        if (!method_exists($controllerClass, $methodName)) {
+            header("HTTP/1.0 404 Not Found");
+            echo "Action Not Found.\n";
+            die;
+        }
+        
         $controller = new $controllerClass();
 
-        call_user_func_array([$controller, $methodName], $vars);
+        $ret = call_user_func_array([$controller, $methodName], $vars);
 
-        self::render($controllerName, $methodName);
+        if (empty($ret)) {
+            self::render($controllerName, $methodName);
+        }
     }
 
     /**
@@ -48,7 +62,7 @@ class App
      *
      * @return void
      */
-    private static function render($controllerName, $methodName)
+    public static function render($controllerName, $methodName)
     {
 
         $templatePath = TEMPLATES . $controllerName . DS;

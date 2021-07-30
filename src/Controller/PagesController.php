@@ -46,7 +46,7 @@ class PagesController
 
     /**
      * Change user password
-     * 
+     *
      * @return void
      */
     public function changePassword()
@@ -56,7 +56,6 @@ class PagesController
 
             if (password_verify($_POST['old_password'], $checkPasswd)) {
                 if ($_POST['repeat_password'] === $_POST['password']) {
-
                     $SettingsTable = new SettingsTable();
                     $setting = $SettingsTable->get('passwd');
                     if ($setting === null) {
@@ -81,7 +80,7 @@ class PagesController
 
     /**
      * User login function
-     * 
+     *
      * @return void
      */
     public function login()
@@ -98,10 +97,9 @@ class PagesController
         }
     }
 
-
     /**
      * Logs user out.
-     * 
+     *
      * @return void
      */
     public function logout()
@@ -111,10 +109,28 @@ class PagesController
         App::redirect('/');
     }
 
-    
+    public function video()
+    {
+        header('Content-Type: video/mpeg');
+        header('Content-Disposition: inline');
+        $stream = fopen( 'http://192.168.88.9:9090/stream/video.mjpeg', "rb" );
+
+        while ( ! feof( $stream ) )
+        {
+            $response = fread( $stream, 8192 ); 
+            echo $response;
+            ob_end_flush();
+            ob_flush();
+            flush();
+            ob_start();
+        }
+
+        fclose( $stream );
+    }
+
     /**
      * Fetches password hash from settings table or returns default password
-     * 
+     *
      * @return string
      */
     private function getAdminPassword()
