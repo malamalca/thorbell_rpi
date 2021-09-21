@@ -9,7 +9,9 @@ sudo apt full-upgrade
 sudo timedatectl set-timezone Europe/Ljubljana
 timedatectl status
 
-sudo nano /boot/config.txt ??? 
+sudo nano /boot/config.txt
+   dtoverlay=disable-bt
+
 sudo systemctl disable hciuart.service
 sudo systemctl disable bluealsa.service
 sudo systemctl disable bluetooth.service
