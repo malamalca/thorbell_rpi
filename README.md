@@ -73,6 +73,9 @@ sudo nano /etc/samba/smb.conf
   Public = yes
 
 sudo smbpasswd -a thorbell
+
+sudo service smbd restart
+sudo service nmbd restart
 ```
 
 ## UV4L
