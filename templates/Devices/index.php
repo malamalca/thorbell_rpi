@@ -20,8 +20,8 @@ $title = 'Devices';
     <?php
         foreach ($devices as $device) {
     ?>
-        <tr>
-            <td><?= $device->title ?></td>
+        <tr id="<?= $device->id ?>">
+            <td><?= h($device->title) ?></td>
             <td><?= $device->token ?></td>
             <td>
                 <a href="<?= App::url('/devices/delete/' . $device->id) ?>" onclick="return confirm('Are you sure?');">

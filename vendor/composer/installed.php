@@ -1,42 +1,182 @@
-<?php return array (
-  'root' => 
-  array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
-    'aliases' => 
-    array (
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => '46a78541e788abec3ce1b3be80f9f987d05a39d6',
+        'name' => 'malamalca/thorbell_rpi',
+        'dev' => true,
     ),
-    'reference' => 'aa3399b4b1ebe5edb755a980b3528c9a0dee7c4f',
-    'name' => 'malamalca/thorbell_rpi',
-  ),
-  'versions' => 
-  array (
-    'malamalca/thorbell_rpi' => 
-    array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'aa3399b4b1ebe5edb755a980b3528c9a0dee7c4f',
+    'versions' => array(
+        'brick/math' => array(
+            'pretty_version' => '0.9.3',
+            'version' => '0.9.3.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../brick/math',
+            'aliases' => array(),
+            'reference' => 'ca57d18f028f84f777b2168cd1911b0dee2343ae',
+            'dev_requirement' => false,
+        ),
+        'edamov/pushok' => array(
+            'pretty_version' => '0.13.0',
+            'version' => '0.13.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../edamov/pushok',
+            'aliases' => array(),
+            'reference' => '743397b7590867f4d6396af6562edb3ca664f9b9',
+            'dev_requirement' => false,
+        ),
+        'fgrosse/phpasn1' => array(
+            'pretty_version' => 'v2.3.0',
+            'version' => '2.3.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../fgrosse/phpasn1',
+            'aliases' => array(),
+            'reference' => '20299033c35f4300eb656e7e8e88cf52d1d6694e',
+            'dev_requirement' => false,
+        ),
+        'malamalca/thorbell_rpi' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => '46a78541e788abec3ce1b3be80f9f987d05a39d6',
+            'dev_requirement' => false,
+        ),
+        'nikic/fast-route' => array(
+            'pretty_version' => 'v1.3.0',
+            'version' => '1.3.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nikic/fast-route',
+            'aliases' => array(),
+            'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
+            'dev_requirement' => false,
+        ),
+        'piphp/gpio' => array(
+            'pretty_version' => '0.4.0',
+            'version' => '0.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../piphp/gpio',
+            'aliases' => array(),
+            'reference' => '9288aa1b56c7ca85b182bbfb5225313ca7354093',
+            'dev_requirement' => false,
+        ),
+        'psr/http-client' => array(
+            'pretty_version' => '1.0.1',
+            'version' => '1.0.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-client',
+            'aliases' => array(),
+            'reference' => '2dfb5f6c5eff0e91e20e913f8c5452ed95b86621',
+            'dev_requirement' => false,
+        ),
+        'psr/http-factory' => array(
+            'pretty_version' => '1.0.1',
+            'version' => '1.0.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-factory',
+            'aliases' => array(),
+            'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
+            'dev_requirement' => false,
+        ),
+        'psr/http-message' => array(
+            'pretty_version' => '1.0.1',
+            'version' => '1.0.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-message',
+            'aliases' => array(),
+            'reference' => 'f6561bf28d520154e4b0ec72be95418abe6d9363',
+            'dev_requirement' => false,
+        ),
+        'ramsey/collection' => array(
+            'pretty_version' => '1.2.1',
+            'version' => '1.2.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../ramsey/collection',
+            'aliases' => array(),
+            'reference' => 'eaca1dc1054ddd10cbd83c1461907bee6fb528fa',
+            'dev_requirement' => false,
+        ),
+        'ramsey/uuid' => array(
+            'pretty_version' => '4.2.1',
+            'version' => '4.2.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../ramsey/uuid',
+            'aliases' => array(),
+            'reference' => 'fe665a03df4f056aa65af552a96e1976df8c8dae',
+            'dev_requirement' => false,
+        ),
+        'rhumsaa/uuid' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '4.2.1',
+            ),
+        ),
+        'spomky-labs/base64url' => array(
+            'pretty_version' => 'v2.0.4',
+            'version' => '2.0.4.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spomky-labs/base64url',
+            'aliases' => array(),
+            'reference' => '7752ce931ec285da4ed1f4c5aa27e45e097be61d',
+            'dev_requirement' => false,
+        ),
+        'symfony/polyfill-ctype' => array(
+            'pretty_version' => 'v1.23.0',
+            'version' => '1.23.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/polyfill-ctype',
+            'aliases' => array(),
+            'reference' => '46cd95797e9df938fdd2b03693b5fca5e64b01ce',
+            'dev_requirement' => false,
+        ),
+        'symfony/polyfill-php81' => array(
+            'pretty_version' => 'v1.23.0',
+            'version' => '1.23.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/polyfill-php81',
+            'aliases' => array(),
+            'reference' => 'e66119f3de95efc359483f810c4c3e6436279436',
+            'dev_requirement' => false,
+        ),
+        'web-token/jwt-core' => array(
+            'pretty_version' => 'v2.2.11',
+            'version' => '2.2.11.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../web-token/jwt-core',
+            'aliases' => array(),
+            'reference' => '53beb6f6c1eec4fa93c1c3e5d9e5701e71fa1678',
+            'dev_requirement' => false,
+        ),
+        'web-token/jwt-key-mgmt' => array(
+            'pretty_version' => 'v2.2.11',
+            'version' => '2.2.11.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../web-token/jwt-key-mgmt',
+            'aliases' => array(),
+            'reference' => '0b116379515700d237b4e5de86879078ccb09d8a',
+            'dev_requirement' => false,
+        ),
+        'web-token/jwt-signature' => array(
+            'pretty_version' => 'v2.2.11',
+            'version' => '2.2.11.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../web-token/jwt-signature',
+            'aliases' => array(),
+            'reference' => '015b59aaf3b6e8fb9f5bd1338845b7464c7d8103',
+            'dev_requirement' => false,
+        ),
+        'web-token/jwt-signature-algorithm-ecdsa' => array(
+            'pretty_version' => 'v2.2.11',
+            'version' => '2.2.11.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../web-token/jwt-signature-algorithm-ecdsa',
+            'aliases' => array(),
+            'reference' => '44cbbb4374c51f1cf48b82ae761efbf24e1a8591',
+            'dev_requirement' => false,
+        ),
     ),
-    'nikic/fast-route' => 
-    array (
-      'pretty_version' => 'v1.3.0',
-      'version' => '1.3.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
-    ),
-    'piphp/gpio' => 
-    array (
-      'pretty_version' => '0.4.0',
-      'version' => '0.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '9288aa1b56c7ca85b182bbfb5225313ca7354093',
-    ),
-  ),
 );

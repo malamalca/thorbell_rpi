@@ -47,6 +47,11 @@ define('TMP', ROOT . DS . 'tmp' . DS);
 define('PHOTOS', ROOT . DS . 'photos' . DS);
 
 /**
+ * Path to the resources directory.
+ */
+define('RESOURCES', ROOT . DS . 'resources' . DS);
+
+/**
  * Path to certificates.
  */
 define('CERTS', ROOT . DS . 'certs' . DS);

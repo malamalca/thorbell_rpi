@@ -18,7 +18,6 @@ if (Configure::read('debug')) {
     ini_set('display_errors', true);
 }
 
-
 /**
  * Helper debug funtion
  *
@@ -32,6 +31,17 @@ function dd()
         echo '</pre>';
         die;
     }
+}
+
+/**
+ * Helper htmlentities() funtion
+ *
+ * @param string $output Output data
+ * @return void
+ */
+function h($output)
+{
+    echo htmlentities($output, ENT_COMPAT, 'UTF-8');
 }
 
 /**

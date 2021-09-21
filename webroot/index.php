@@ -57,6 +57,7 @@ switch ($routeInfo[0]) {
             $controllerName = $routeInfo[1][0];
             $vars['action'] = $routeInfo[1][1];
         }
+
         App::dispatch($controllerName, $vars);
 
         break;

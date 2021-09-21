@@ -1,12 +1,15 @@
 <?php
-require dirname(dirname(__FILE__)) . '/vendor/autoload.php';
+//require dirname(dirname(dirname(__FILE__))) . '/vendor/autoload.php';
+
+
+require dirname(dirname(__DIR__)) . '/config/bootstrap.php';
 
 use PiPHP\GPIO\GPIO;
 use PiPHP\GPIO\Pin\InputPinInterface;
 
 define('PIN_BUTTON', 23);
-define('SOUND_FILE', dirname(dirname(__FILE__)) . '/resources/doorbell.wav');
-define('SNAPSHOT_URL', 'https://localhost:9090/stream/snapshot.jpeg');
+define('SOUND_FILE', RESOURCES . 'doorbell.wav');
+define('SNAPSHOT_URL', 'http://localhost:9090/stream/snapshot.jpeg');
 
 
 // Create a GPIO object
@@ -33,7 +36,7 @@ $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
     }
 
     if ($value == 1) {
-        //shell_exec('aplay -q ' . SOUND_FILE);
+        shell_exec('aplay -q ' . SOUND_FILE);
     }
 
     // Returning false will make the watcher return false immediately

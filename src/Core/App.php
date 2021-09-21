@@ -32,6 +32,9 @@ class App
     public static function dispatch($controllerName, $vars)
     {
         $methodName = $vars['action'] ?? 'index';
+        if (isset($vars['action'])) {
+            unset($vars['action']);
+        }
 
         // redirect to login page when not logged in
         if (!self::isLoggedIn() && !in_array($controllerName . '/' . $methodName, self::$allowedActions)) {

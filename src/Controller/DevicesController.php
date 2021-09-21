@@ -49,6 +49,16 @@ class DevicesController {
             if (!empty($_POST['id'])) {
                 $device = $this->DevicesTable->get($_POST['id']);
 
+                if (empty($device)) {
+                    http_response_code(404);
+                    die('Invalid pair code');
+                }
+
+                if (empty($_POST['token'])) {
+                    http_response_code(404);
+                    die('Invalid or Empty Token');
+                }
+
                 if (!empty($device) && !empty($_POST['token']) && !empty($_POST['title'])) {
                     $device->token = $_POST['token'];
                     $device->title = $_POST['title'];
@@ -67,10 +77,9 @@ class DevicesController {
                         App::redirect('/devices');
                     }
                 }        
-            }   
-            
+            }
             http_response_code(404);
-            die('Invalid Pair Code');
+            die('No Pair Code');
         }
     }
 

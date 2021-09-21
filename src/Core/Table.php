@@ -51,6 +51,7 @@ class Table
         $stmt->bindValue(':' . $this->idField, $id, \PDO::PARAM_STR);
 
         $result = $stmt->execute();
+
         if ($result) {
             if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 return self::newEntity($row);
