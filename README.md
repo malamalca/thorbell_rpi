@@ -100,3 +100,23 @@ sudo mv selfsign.* /etc/uv4l/
 sudo service uv4l_raspicam start
 sudo service uv4l_raspicam restart
 ```
+
+## System Service
+
+sudo nano thorbell.service /etc/systemd/system/thorbell.service
+
+[Unit]
+Description=Thorbell
+
+[Service]
+ExecStart=/usr/bin/php   /home/thorbell/camera_wwwroot/src/Console/thorbell.php
+WorkingDirectory=/home/thorbell/camera_wwwroot
+User=thorbell
+Restart=always
+
+[Install]
+WantedBy=default.target  
+
+systemctl daemon-reload
+sudo systemctl enable thorbell.service
+sudo systemctl start thorbell.service
