@@ -102,7 +102,7 @@ sudo service uv4l_raspicam restart
 ```
 
 ## System Service
-
+```
 sudo nano thorbell.service /etc/systemd/system/thorbell.service
 
 [Unit]
@@ -120,3 +120,4 @@ WantedBy=default.target
 systemctl daemon-reload
 sudo systemctl enable thorbell.service
 sudo systemctl start thorbell.service
+```
