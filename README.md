@@ -64,6 +64,12 @@ sudo ln -s /home/pi/camera_wwwroot/ ./cam
 ```
 sudo apt-get install php-pear
 sudo apt-get install php7.3-dev
+
+sudo nano /etc/apt/sources.list
+# uncomment sources
+sudo apt-get build-dep pam
+
+sudo apt-get install libpam0g-dev
 sudo pecl install pam
 ```
 
