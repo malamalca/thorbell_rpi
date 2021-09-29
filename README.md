@@ -22,6 +22,10 @@ sudo systemctl stop avahi-daemon
 sudo systemctl disable triggerhappy
 sudo systemctl stop triggerhappy
 
+#enable www-data to reboot device
+sudo visudo
+   www-data ALL = NOPASSWD: /sbin/reboot, /sbin/halt
+
 ```
 
 ## Change default username PI to THORBELL
