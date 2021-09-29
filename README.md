@@ -71,6 +71,18 @@ sudo apt-get build-dep pam
 
 sudo apt-get install libpam0g-dev
 sudo pecl install pam
+
+# add extension "pam" to php.ini!!!
+sudo service lighttpd restart
+
+sudo cp /etc/pam.d/login /etc/pam.d/php
+sudo nano /etc/pam.d/php
+   auth       sufficient /lib/arm-linux-gnueabihf/security/pam_unix.so shadow nodelay
+   account    sufficient /lib/arm-linux-gnueabihf/security/pam_unix.so
+   
+sudo chgrp www-data /etc/shadow
+# for debug: cat /var/log/auth.log
+
 ```
 
 ## Samba (development)
