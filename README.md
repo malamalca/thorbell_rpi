@@ -60,6 +60,13 @@ sudo apt-get install php7.3-curl php7.3-mbstring php7.3-pdo php7.3-sqlite3 php7.
 sudo ln -s /home/pi/camera_wwwroot/ ./cam
 ```
 
+### PAM for auth 
+```
+sudo apt-get install php-pear
+sudo apt-get install php7.3-dev
+sudo pecl install pam
+```
+
 ## Samba (development)
 ```
 sudo apt-get install samba samba-common-bin
