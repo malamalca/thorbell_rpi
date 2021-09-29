@@ -54,8 +54,6 @@ sudo nano /etc/ssh/sshd_config
 sudo apt-get -y install lighttpd
 
 sudo apt install php7.3 php7.3-fpm php7.3-cgi
-
-sudo apt-get install php7.3-lighttpd
 sudo lighttpd-enable-mod fastcgi-php
 sudo service lighttpd force-reload
 
