@@ -40,7 +40,11 @@ class SettingsTable extends Table
         return !$setting->hasErrors;
     }
 
-    public function validateAndSave($setting) {
+    public function patchAndSave($setting) {
+        if (isset($_POST[$setting->id])) {
+            $setting->value = $_POST[$setting->id];
+        }
+
         if ($this->validate($setting)) {
             return $this->save($setting);
         }

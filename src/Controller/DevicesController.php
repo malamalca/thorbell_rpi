@@ -39,6 +39,12 @@ class DevicesController {
             $_SESSION['pairDevice'] = $this->DevicesTable->generatePairingDevice();
         }
 
+        // double check
+        $device = $this->DevicesTable->get($_SESSION['pairDevice']->id);
+        if (empty($device)) {
+            $_SESSION['pairDevice'] = $this->DevicesTable->generatePairingDevice();
+        }
+
         App::set('pairDevice', $_SESSION['pairDevice']);
         
     }

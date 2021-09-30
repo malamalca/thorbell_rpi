@@ -1,16 +1,18 @@
 <?php
-//require dirname(dirname(dirname(__FILE__))) . '/vendor/autoload.php';
-
-
 require dirname(dirname(__DIR__)) . '/config/bootstrap.php';
 
+use App\Core\Configure;
+use App\Core\Log;
+use App\Lib\ApnsPush;
+use App\Lib\Mqtt;
+use App\Model\Table\DevicesTable;
+use App\Model\Table\SettingsTable;
 use PiPHP\GPIO\GPIO;
 use PiPHP\GPIO\Pin\InputPinInterface;
 
 define('PIN_BUTTON', 23);
 define('SOUND_FILE', RESOURCES . 'doorbell.wav');
 define('SNAPSHOT_URL', 'http://localhost:9090/stream/snapshot.jpeg');
-
 
 // Create a GPIO object
 $gpio = new GPIO();
@@ -26,7 +28,7 @@ $interruptWatcher = $gpio->createWatcher();
 
 // Register a callback to be triggered on pin interrupts
 $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
-    echo 'Pin ' . $pin->getNumber() . ' changed to: ' . $value . PHP_EOL;
+    Log::info('Pin ' . $pin->getNumber() . ' changed to: ' . $value);
 
     $context = ['http' => [ 'method' => 'GET' ], 'ssl' => [ 'verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
     $imageData = file_get_contents(SNAPSHOT_URL, false, stream_context_create($context));
@@ -36,7 +38,20 @@ $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
     }
 
     if ($value == 1) {
-        shell_exec('aplay -q ' . SOUND_FILE);
+        // play ringback in background
+        exec('aplay -q ' . SOUND_FILE . '> /dev/null 2>/dev/null &');
+
+        $SettingsTable = new SettingsTable();
+        $doorbellName = $SettingsTable->get('name')->value ?? Configure::read('App.defaultName');
+
+        // mqtt
+        Mqtt::publish();
+
+        // fetch devices
+        $devicesTable = new DevicesTable();
+        $devices = $devicesTable->getDevices();
+        
+        ApnsPush::sendNotification($devices, $doorbellName);
     }
 
     // Returning false will make the watcher return false immediately

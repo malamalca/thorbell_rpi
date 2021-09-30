@@ -5,6 +5,7 @@ tmp/*
 vendor/*
 photos/*
 certs/*
+db/*
 
 # OS generated files #
 ######################

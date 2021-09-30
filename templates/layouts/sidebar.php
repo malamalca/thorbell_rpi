@@ -47,6 +47,12 @@
           </a>
         </li>
         <li>
+          <a href="<?= App::url('/reboot') ?>" class="hover-blue-grey" onclick="return confirm('Are you sure?');">
+            <i class="icon ion-md-refresh"></i>
+            <span>Reboot</span>
+          </a>
+        </li>
+        <li>
           <a href="<?= App::url('/logout') ?>" class="hover-blue-grey">
             <i class="icon ion-md-exit"></i>
             <span>Logout</span>

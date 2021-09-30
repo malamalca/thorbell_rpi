@@ -2,6 +2,7 @@
 namespace App\Lib;
 
 use App\Core\Configure;
+use App\Core\Log;
 use Pushok\AuthProvider;
 use Pushok\Client;
 use Pushok\Notification;
@@ -13,7 +14,13 @@ use Ramsey\Uuid\Uuid;
 class ApnsPush
 {
 
-    public static function sendNotification($message, \App\Model\Entity\Device $device, $doorbellName)
+    /**
+     * Send voip push notification to phones (devices)
+     * 
+     * @param array $devices Array of receiving devices
+     * @param string $doorbellName Doorbels name that will appear on phones call notification dialog
+     */
+    public static function sendNotification($devices, $doorbellName)
     {
         $options = [
             'key_id' => Configure::read('Apns.key_id'), // The Key ID obtained from Apple developer account
@@ -27,8 +34,8 @@ class ApnsPush
         // Can be useful when trying to send pushes during long-running tasks
         $authProvider = AuthProvider\Token::create($options);
         
-        $alert = Alert::create()->setTitle('Hello!');
-        $alert = $alert->setBody('First push notification');
+        $alert = Alert::create()->setTitle('Throbell Ringing');
+        $alert = $alert->setBody('Someone is at the Door!');
         
         $payload = Payload::create()->setAlert($alert);
         
@@ -36,18 +43,16 @@ class ApnsPush
         $payload->setSound('default');
         
         //add custom value to your notification, needs to be customized
-        //$payload->setCustomValue('message', $message);
         $payload->setCustomValue('UUID', (Uuid::uuid4())->toString());
-        $payload->setCustomValue('id', $device->id);
+       // $payload->setCustomValue('id', $device->id);                                // pair code
         $payload->setCustomValue('title', $doorbellName);
 
         $payload->setPushType('voip');
         
-        $deviceTokens = [$device->token];
-        
         $notifications = [];
-        foreach ($deviceTokens as $deviceToken) {
-            $notifications[] = new Notification($payload, $deviceToken);
+        foreach ((array)$devices as $device) {
+            $payload->setCustomValue('id', $device->id);         
+            $notifications[] = new Notification($payload, $device->token);
         }
         
         // If you have issues with ssl-verification, you can temporarily disable it. Please see attached note.
@@ -56,59 +61,22 @@ class ApnsPush
         $client = new Client($authProvider, $production = false);
         $client->addNotifications($notifications);
         
-        
-        
         $responses = $client->push(); // returns an array of ApnsResponseInterface (one Response per Notification)
         
         foreach ($responses as $response) {
-            // The device token
-            echo $response->getDeviceToken() . PHP_EOL;
-            // A canonical UUID that is the unique ID for the notification. E.g. 123e4567-e89b-12d3-a456-4266554400a0
-            echo $response->getApnsId() . PHP_EOL;
-            
-            // Status code. E.g. 200 (Success), 410 (The device token is no longer active for the topic.)
-            echo $response->getStatusCode() . PHP_EOL;
-            // E.g. The device token is no longer active for the topic.
-            echo $response->getReasonPhrase() . PHP_EOL;
-            // E.g. Unregistered
-            echo $response->getErrorReason() . PHP_EOL;
-            // E.g. The device token is inactive for the specified topic.
-            echo $response->getErrorDescription() . PHP_EOL;
-            echo $response->get410Timestamp() . PHP_EOL;
-        }
-    }
-
-    public static function sendNotification2($message, $device_token)
-    {
-        if(defined('CURL_HTTP_VERSION_2_0'))
-        {
-            //$alert = sprintf('{"aps":{"alert":"%s","sound":"default"}}', json_encode($message));
-            $alert = sprintf('{"aps":{"alert":"%s","sound":"default"}, "data": {"apn_call_name": "Alex1", "apn_call_id": "Alex123"}}', json_encode($message));
-
-            $url = Configure::read('Apns.url') . $device_token;
-
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $alert);
-            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'apns-push-type: voip',
-                'apns-topic: ' . Configure::read('Apns.topic') . '.voip',
+            Log::info('Voip Push', [
+                'token' => $response->getDeviceToken(),
+                'apns_id' => $response->getApnsId(),
+                // Status code. E.g. 200 (Success), 410 (The device token is no longer active for the topic.)
+                'status' => $response->getStatusCode(),
+                // E.g. Unregistered
+                'error_reason' => $response->getErrorReason(),
+                // E.g. The device token is no longer active for the topic.
+                'error_phrase' => $response->getReasonPhrase(),
+                // E.g. The device token is inactive for the specified topic.
+                'error_descript' => $response->getErrorDescription(),
+                '410_timestamp' => $response->get410Timestamp(),
             ]);
-
-            curl_setopt($ch, CURLOPT_SSLCERT, Configure::read('Apns.certificate'));
-            curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'P12');
-            curl_setopt($ch, CURLOPT_SSLCERTPASSWD, Configure::read('Apns.password'));
-            curl_setopt($ch, CURLOPT_HEADER, 1);
-
-            $response = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            if ($response === false) {
-                echo 'Curl error: ' . curl_error($ch);
-            } else {
-                var_dump($response);
-                var_dump($httpcode);
-            }
         }
     }
 }

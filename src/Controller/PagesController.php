@@ -25,15 +25,23 @@ class PagesController
     public function settings()
     {
         $SettingsTable = new SettingsTable();
+
         $name = $SettingsTable->get('name', Configure::read('App.defaultName'));
+        $mqtt_server = $SettingsTable->get('mqtt_server');
+        $mqtt_port = $SettingsTable->get('mqtt_port');
+        $mqtt_username = $SettingsTable->get('mqtt_username');
+        $mqtt_password = $SettingsTable->get('mqtt_password');
+        $mqtt_mdnsname = $SettingsTable->get('mqtt_mdnsname', Configure::read('Mqtt.mdns_name'));
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!empty($_POST['name'])) {
-                $name->value = $_POST['name'];
-                $SettingsTable->validateAndSave($name);
-            }
+            $SettingsTable->patchAndSave($name);
+            $SettingsTable->patchAndSave($mqtt_server);
+            $SettingsTable->patchAndSave($mqtt_port);
+            $SettingsTable->patchAndSave($mqtt_username);
+            $SettingsTable->patchAndSave($mqtt_password);
+            $SettingsTable->patchAndSave($mqtt_mdnsname);
 
-            if ($name->hasErrors) {
+            if ($name->hasErrors || $mqtt_server->hasErrors) {
                 App::setFlash('There are some errors. Please check your input.', 'error');
             } else {
                 App::setFlash('Settings have been saved.');
@@ -41,7 +49,7 @@ class PagesController
             }
         }
 
-        App::set(compact('name'));
+        App::set(compact('name', 'mqtt_server', 'mqtt_port', 'mqtt_username', 'mqtt_password', 'mqtt_mdnsname'));
     }
 
     /**
@@ -51,8 +59,19 @@ class PagesController
      */
     public function changePassword()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['password'])) {
-            $checkPasswd = $this->getAdminPassword();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['password']) && !empty($_POST['old_password'])) {
+            if ($_POST['repeat_password'] === $_POST['password']) {
+                if (pam_chpass('thorbell', $_POST['old_password'], $_POST['password'])) {
+                    App::setFlash('Admin password has been changed.');
+                    App::redirect('/');
+                } else {
+                    App::setFlash('Password change failed.', 'error');
+                }
+            } else {
+                App::setFlash('Entered passwords are not equal.', 'error');
+            }
+
+            /*$checkPasswd = $this->getAdminPassword();
 
             if (password_verify($_POST['old_password'], $checkPasswd)) {
                 if ($_POST['repeat_password'] === $_POST['password']) {
@@ -74,7 +93,7 @@ class PagesController
                 }
             } else {
                 App::setFlash('Old password is invalid.', 'error');
-            }
+            }*/
         }
     }
 
@@ -86,9 +105,14 @@ class PagesController
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['password'])) {
-            $checkPasswd = $this->getAdminPassword();
+            /*$checkPasswd = $this->getAdminPassword();
 
             if (password_verify($_POST['password'], $checkPasswd)) {
+                $_SESSION['isLoggedIn'] = true;
+                App::redirect('/');
+            }*/
+
+            if (pam_auth('thorbell', $_POST['password'], $errMsg)) {
                 $_SESSION['isLoggedIn'] = true;
                 App::redirect('/');
             }
@@ -111,13 +135,13 @@ class PagesController
 
     public function video()
     {
-        header('Content-Type: video/mpeg');
+        /*header('Content-Type: video/mpeg');
         header('Content-Disposition: inline');
         $stream = fopen( 'http://192.168.88.9:9090/stream/video.mjpeg', "rb" );
 
         while ( ! feof( $stream ) )
         {
-            $response = fread( $stream, 8192 ); 
+            $response = fread( $stream, 8192 );
             echo $response;
             ob_end_flush();
             ob_flush();
@@ -125,7 +149,40 @@ class PagesController
             ob_start();
         }
 
-        fclose( $stream );
+        fclose( $stream );*/
+
+        ob_end_clean();
+
+        $url = 'http://192.168.88.9:9090/stream/video.mjpeg';
+        $buffersize = 1024 * 1024;
+
+        ini_set('memory_limit', '1024M');
+
+        set_time_limit(3600);
+
+        ob_start();
+
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $opts['http']['header'] = "Range: " . $_SERVER['HTTP_RANGE'];
+        }
+
+        $opts['http']['method'] = "HEAD";
+
+        $conh = stream_context_create($opts);
+
+        $opts['http']['method'] = "GET";
+
+        $cong = stream_context_create($opts);
+
+        $out[] = file_get_contents($url, false, $conh);
+
+        $out[] = $http_response_header;
+
+        ob_end_clean();
+
+        array_map("header", $http_response_header);
+
+        readfile($url, false, $cong);
     }
 
     /**
@@ -143,5 +200,14 @@ class PagesController
         }
 
         return $checkPasswd;
+    }
+
+    /**
+     * Reboots system
+     */
+    public function reboot()
+    {
+        exec('sudo reboot');
+        App::redirect('/');
     }
 }

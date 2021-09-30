@@ -11,6 +11,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute(['GET', 'POST'], '/', ['Pages', 'home']);
     $r->addRoute(['GET', 'POST'], '/login', ['Pages', 'login']);
     $r->addRoute('GET',           '/logout', ['Pages', 'logout']);
+    $r->addRoute('GET',           '/reboot', ['Pages', 'reboot']);
     $r->addRoute(['GET', 'POST'], '/settings', ['Pages', 'settings']);
     $r->addRoute(['GET', 'POST'], '/changepasswd', ['Pages', 'changePassword']);
     $r->addRoute(['GET', 'POST'], '/resetpasswd', ['Pages', 'resetPassword']);

@@ -23,4 +23,4 @@ $doorbellName = $SettingsTable->get('name', Configure::read('App.defaultName'));
 
 echo $device->token . PHP_EOL;
 
-ApnsPush::sendNotification('', $device, "DoorbellName");
+ApnsPush::sendNotification('', $device->token, "DoorbellName");

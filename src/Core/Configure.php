@@ -53,15 +53,17 @@ class Configure
         $instance = self::getInstance();
 
         $ret = $default;
-        $levels = explode('.', $key);
+        $levels = (array)explode('.', $key);
 
         if (!empty($levels)) {
             $base = $instance->config;
 
             $i = 0;
+
             while (isset($base[$levels[$i]])) {
-                if (is_array($base[$levels[$i]])) {
+                if (is_array($base[$levels[$i]]) && ($i < count($levels) - 1)) {
                     $base = $base[$levels[$i]];
+
                     $i++;
                 } else {
                     if ($i == count($levels) - 1) {
