@@ -1,11 +1,11 @@
-config/app.php
-config/.env
-logs/*
-tmp/*
-vendor/*
-photos/*
-certs/*
-db/*
+/config/app.php
+/config/.env
+/logs/*
+/tmp/*
+/vendor/*
+/photos/*
+/certs/*
+/db/*
 /vendor/*
 
 # OS generated files #
