@@ -1,12 +1,16 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Core\App;
-use App\Core\Configure;
 
-class EventsController {
+class EventsController
+{
     /**
      * Show latest rings
+     *
+     * @return void
      */
     public function index()
     {
@@ -30,6 +34,5 @@ class EventsController {
      */
     public function delete($id)
     {
-        
     }
 }

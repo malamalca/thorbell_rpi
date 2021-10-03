@@ -1,17 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Core;
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
-class Log {
-    // Hold the class instance.
+class Log
+{
     private static $instance = null;
     private static $logger = null;
 
-    // The constructor is private
-    // to prevent initiation with outer code.
+    /**
+     * Singleton constructor
+     *
+     * @return void
+     */
     private function __construct()
     {
         // The expensive process (e.g.,db connection) goes here.
@@ -27,8 +30,11 @@ class Log {
         }
     }
 
-    // The object is created from within the class itself
-    // only if the class has no instance.
+    /**
+     * Singleton instance getter
+     *
+     * @return \App\Core\Log
+     */
     public static function getInstance()
     {
         if (self::$instance == null) {
@@ -38,6 +44,11 @@ class Log {
         return self::$instance;
     }
 
+    /**
+     * Get instance's logger
+     *
+     * @return \Monolog\Logger
+     */
     public static function getLogger()
     {
         if (self::$instance == null) {
@@ -47,19 +58,43 @@ class Log {
         return self::$logger;
     }
 
-    public static function info() {
-        return call_user_func_array([self::getLogger(), 'info'], func_get_args());
+    /**
+     * Log info
+     *
+     * @return void
+     */
+    public static function info()
+    {
+        call_user_func_array([self::getLogger(), 'info'], func_get_args());
     }
 
-    public static function warn() {
-        return call_user_func_array([self::getLogger(), 'warn'], func_get_args());
+    /**
+     * Log warning
+     *
+     * @return void
+     */
+    public static function warn()
+    {
+        call_user_func_array([self::getLogger(), 'warn'], func_get_args());
     }
 
-    public static function error() {
-        return call_user_func_array([self::getLogger(), 'error'], func_get_args());
+    /**
+     * Log error
+     *
+     * @return void
+     */
+    public static function error()
+    {
+        call_user_func_array([self::getLogger(), 'error'], func_get_args());
     }
 
-    public static function critical() {
-        return call_user_func_array([self::getLogger(), 'critical'], func_get_args());
+    /**
+     * Log critical
+     *
+     * @return void
+     */
+    public static function critical()
+    {
+        call_user_func_array([self::getLogger(), 'critical'], func_get_args());
     }
 }

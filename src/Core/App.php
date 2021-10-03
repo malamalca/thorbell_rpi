@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Core;
 
 use App\Model\Table\SettingsTable;
@@ -12,6 +14,11 @@ class App
 
     public $autoRender = true;
 
+    /**
+     * Singleton instance getter
+     *
+     * @return \App\Core\App
+     */
     public static function getInstance()
     {
         if (!self::$instance) {
@@ -25,7 +32,6 @@ class App
      * Dispatch function
      *
      * @param string $controllerName Controller name
-     * @param string $methodName Method name
      * @param array $vars Variables
      * @return void
      */
@@ -46,11 +52,11 @@ class App
 
         // check if action exists
         if (!method_exists($controllerClass, $methodName)) {
-            header("HTTP/1.0 404 Not Found");
+            header('HTTP/1.0 404 Not Found');
             echo "Action Not Found.\n";
             die;
         }
-        
+
         $controller = new $controllerClass();
 
         $ret = call_user_func_array([$controller, $methodName], $vars);
@@ -63,11 +69,12 @@ class App
     /**
      * Render function
      *
+     * @param string $controllerName Controller name
+     * @param string $methodName Method name
      * @return void
      */
     public static function render($controllerName, $methodName)
     {
-
         $templatePath = TEMPLATES . $controllerName . DS;
         if (self::isAjax()) {
             $templatePath .= 'ajax' . DS;
@@ -82,7 +89,7 @@ class App
         extract($App->_vars);
 
         ob_start();
-        include($templateFile);
+        include $templateFile;
         $contents = ob_get_contents();
         ob_end_clean();
 
@@ -95,34 +102,36 @@ class App
 
         // output render data
         if (self::isAjax()) {
-            require(TEMPLATES . 'layouts' . DS . 'ajax.php');
+            require TEMPLATES . 'layouts' . DS . 'ajax.php';
         } else {
-            require(TEMPLATES . 'layouts' . DS . 'default.php');
+            require TEMPLATES . 'layouts' . DS . 'default.php';
         }
     }
 
     /**
      * Determines if request is ajax
-     * 
+     *
      * @return bool
      */
     public static function isAjax()
     {
-        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && in_array(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']), ['xmlhttprequest', 'thorbell']);
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            in_array(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']), ['xmlhttprequest', 'thorbell']);
     }
 
     /**
      * Set variable for view render
-     * 
+     *
      * @param string|array $varName Variable name or array with variables
      * @param mixed $varValue Variable value
+     * @return void
      */
     public static function set($varName, $varValue = null)
     {
         $App = self::getInstance();
         if (is_array($varName)) {
             foreach ($varName as $arrName => $arrValue) {
-                $App->_vars[$arrName] = $arrValue;    
+                $App->_vars[$arrName] = $arrValue;
             }
         } else {
             $App->_vars[$varName] = $varValue;
@@ -142,6 +151,12 @@ class App
         return $url_base . substr($params, 1);
     }
 
+    /**
+     * Send redirect header
+     *
+     * @param string $dest Redirect destination
+     * @return void
+     */
     public static function redirect($dest)
     {
         if (!self::isAjax()) {
@@ -150,12 +165,24 @@ class App
         }
     }
 
+    /**
+     * Sets flash message
+     *
+     * @param string $msg Flash message
+     * @param string $code Flash code
+     * @return void
+     */
     public static function setFlash($msg, $code = 'success')
     {
         $_SESSION['flash.message'] = $msg;
         $_SESSION['flash.class'] = $code;
     }
 
+    /**
+     * Flash message
+     *
+     * @return void|string
+     */
     public static function flash()
     {
         if (!empty($_SESSION['flash.message'])) {
@@ -165,10 +192,15 @@ class App
             unset($_SESSION['flash.message']);
             unset($_SESSION['flash.class']);
 
-            return '<div id="notification" class="' . htmlspecialchars($code) . '">' . htmlspecialchars($msg) . '</div>';
+            return '<div id="notification" class="' . h($code) . '">' . h($msg) . '</div>';
         }
     }
 
+    /**
+     * Returns logged user status
+     *
+     * @return bool
+     */
     public static function isLoggedIn()
     {
         return !empty($_SESSION['isLoggedIn']);

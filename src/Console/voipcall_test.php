@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 require dirname(dirname(__DIR__)) . '/config/bootstrap.php';
 
 use App\Core\Configure;
@@ -23,4 +25,4 @@ $doorbellName = $SettingsTable->get('name', Configure::read('App.defaultName'));
 
 echo $device->token . PHP_EOL;
 
-ApnsPush::sendNotification('', $device->token, "DoorbellName");
+ApnsPush::sendNotification('', $device->token, 'DoorbellName');

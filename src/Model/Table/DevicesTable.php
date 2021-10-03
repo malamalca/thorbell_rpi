@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model\Table;
 
 use App\Core\DB;
@@ -32,6 +34,11 @@ class DevicesTable extends Table
         return $devices;
     }
 
+    /**
+     * Generate new pairing code
+     *
+     * @return bool|\App\Model\Entity\Device
+     */
     public function generatePairingDevice()
     {
         // clear all other temporary pairing devices
@@ -47,5 +54,4 @@ class DevicesTable extends Table
 
         return false;
     }
-
 }

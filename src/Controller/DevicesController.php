@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Core\App;
-use App\Core\Configure;
 use App\Model\Table\DevicesTable;
 use App\Model\Table\SettingsTable;
 
-class DevicesController {
+class DevicesController
+{
     private $DevicesTable = null;
 
     /**
@@ -46,9 +48,13 @@ class DevicesController {
         }
 
         App::set('pairDevice', $_SESSION['pairDevice']);
-        
     }
 
+    /**
+     * Pair devices
+     *
+     * @return void
+     */
     public function pair()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -78,11 +84,11 @@ class DevicesController {
                             header('Content-Type: application/json');
                             die(sprintf('{"name": "%s"}', htmlspecialchars((new SettingsTable())->get('name')->value)));
                         }
-                        
+
                         App::setFlash('Success');
                         App::redirect('/devices');
                     }
-                }        
+                }
             }
             http_response_code(404);
             die('No Pair Code');

@@ -1,7 +1,7 @@
 <?php
-namespace App\Core;
+declare(strict_types=1);
 
-use \App\Core\DB;
+namespace App\Core;
 
 class Table
 {
@@ -53,7 +53,8 @@ class Table
         $result = $stmt->execute();
 
         if ($result) {
-            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($row) {
                 return self::newEntity($row);
             }
         } else {
@@ -81,7 +82,7 @@ class Table
         $stmt->execute();
         $result = $stmt->fetchColumn();
 
-        return ((int)$result > 0);
+        return (int)$result > 0;
     }
 
     /**
@@ -113,7 +114,12 @@ class Table
                     }
                 }
 
-                $sql = 'UPDATE ' . $this->tableName . ' SET ' . $fieldNameValue . ' WHERE ' . $this->idField . '=:' . $this->idField;
+                $sql = sprintf(
+                    'UPDATE %1$s SET %2$s WHERE %3$s=:%3$s',
+                    $this->tableName,
+                    $fieldNameValue,
+                    $this->idField
+                );
             } else {
                 // INSERT statement
                 //$fieldList = implode(', ', $this->fieldList);
@@ -133,7 +139,12 @@ class Table
                     }
                 }
 
-                $sql = 'INSERT INTO ' . $this->tableName . ' (' . $fieldList . ') VALUES (' . $valuesList . ')';
+                $sql = sprintf(
+                    'INSERT INTO %1$s (%2$s) VALUES (%3$s)',
+                    $this->tableName,
+                    $fieldList,
+                    $valuesList
+                );
             }
 
             // prepare parameter values
@@ -173,7 +184,11 @@ class Table
         $pdo = DB::getInstance()->connect();
 
         try {
-            $stmt = $pdo->prepare('DELETE FROM ' . $this->tableName . ' WHERE ' . $this->idField . ' = :' . $this->idField);
+            $stmt = $pdo->prepare(sprintf(
+                'DELETE FROM %1$s WHERE %2$s = :%2$s',
+                $this->tableName,
+                $this->idField
+            ));
             $stmt->bindValue(':' . $this->idField, $entity->{$this->idField}, \PDO::PARAM_STR);
 
             return (bool)$stmt->execute();

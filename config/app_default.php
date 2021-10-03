@@ -20,6 +20,12 @@ return [
         ],
     ],
 
+    'Doorbell' => [
+        'gpio_pin' => 23,
+        'sound_file' => RESOURCES . 'doorbell.wav',
+        'snapshot_url' => 'http://localhost:9090/stream/snapshot.jpeg',
+    ],
+
     'Apns' => [
         'key_id' => 'XXXXXXXX',                         // The Key ID obtained from Apple developer account
         'team_id' => 'XXXXXXXX',                        // The Team ID obtained from Apple developer account

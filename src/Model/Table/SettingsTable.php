@@ -1,7 +1,8 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model\Table;
 
-use App\Core\DB;
 use App\Core\Table;
 
 class SettingsTable extends Table
@@ -12,12 +13,13 @@ class SettingsTable extends Table
 
     /**
      * Override default get() to return newEntity when setting does not exist.
-     * 
+     *
      * @param string $id Setting id
      * @param string $defaultValue Default setting value if it does not exist.
      * @return \App\Model\Entity\Setting
      */
-    public function get($id, $defaultValue = null) {
+    public function get($id, $defaultValue = null)
+    {
         $ret = parent::get($id);
 
         if (!$ret) {
@@ -29,7 +31,12 @@ class SettingsTable extends Table
         return $ret;
     }
 
-    public function validate($setting) {
+    /**
+     * @param \App\Model\Entity\Setting $setting Setting Entity.
+     * @return bool
+     */
+    public function validate($setting)
+    {
         $setting->hasErrors = false;
 
         switch ($setting->id) {
@@ -40,7 +47,12 @@ class SettingsTable extends Table
         return !$setting->hasErrors;
     }
 
-    public function patchAndSave($setting) {
+    /**
+     * @param \App\Model\Entity\Setting $setting Setting Entity.
+     * @return bool|\App\Model\Entity\Setting
+     */
+    public function patchAndSave($setting)
+    {
         if (isset($_POST[$setting->id])) {
             $setting->value = $_POST[$setting->id];
         }

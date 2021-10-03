@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Core\App;
 use App\Core\Configure;
-use App\Model\Table\DevicesTable;
 use App\Model\Table\SettingsTable;
 
 class PagesController
@@ -133,55 +134,36 @@ class PagesController
         App::redirect('/');
     }
 
+    /**
+     * Video relay
+     *
+     * @return void
+     */
     public function video()
     {
-        /*header('Content-Type: video/mpeg');
-        header('Content-Disposition: inline');
-        $stream = fopen( 'http://192.168.88.9:9090/stream/video.mjpeg', "rb" );
-
-        while ( ! feof( $stream ) )
-        {
-            $response = fread( $stream, 8192 );
-            echo $response;
-            ob_end_flush();
-            ob_flush();
-            flush();
-            ob_start();
-        }
-
-        fclose( $stream );*/
-
         ob_end_clean();
 
         $url = 'http://192.168.88.9:9090/stream/video.mjpeg';
         $buffersize = 1024 * 1024;
 
         ini_set('memory_limit', '1024M');
-
         set_time_limit(3600);
-
         ob_start();
 
         if (isset($_SERVER['HTTP_RANGE'])) {
-            $opts['http']['header'] = "Range: " . $_SERVER['HTTP_RANGE'];
+            $opts['http']['header'] = 'Range: ' . $_SERVER['HTTP_RANGE'];
         }
 
-        $opts['http']['method'] = "HEAD";
-
+        $opts['http']['method'] = 'HEAD';
         $conh = stream_context_create($opts);
-
-        $opts['http']['method'] = "GET";
-
+        $opts['http']['method'] = 'GET';
         $cong = stream_context_create($opts);
-
         $out[] = file_get_contents($url, false, $conh);
-
         $out[] = $http_response_header;
 
         ob_end_clean();
 
-        array_map("header", $http_response_header);
-
+        array_map('header', $http_response_header);
         readfile($url, false, $cong);
     }
 
@@ -204,6 +186,8 @@ class PagesController
 
     /**
      * Reboots system
+     *
+     * @return void
      */
     public function reboot()
     {

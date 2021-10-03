@@ -1,21 +1,27 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Core;
-
-use App\Core\Configure;
-
 
 /**
  * DB connnection
  */
-class DB {
+class DB
+{
     private static $instance = null;
 
     /**
      * PDO instance
-     * @var pdo 
+     *
+     * @var \App\Core\pdo
      */
     protected $_pdo = null;
 
+    /**
+     * Singleton instance getter
+     *
+     * @return \App\Core\DB
+     */
     public static function getInstance()
     {
         if (!self::$instance) {
@@ -23,10 +29,11 @@ class DB {
         }
 
         return self::$instance;
-    }    
+    }
 
     /**
      * return in instance of the PDO object that connects to the SQLite database
+     *
      * @return \PDO
      */
     public static function connect()
@@ -34,7 +41,7 @@ class DB {
         $db = DB::getInstance();
 
         if ($db->_pdo == null) {
-            $db->_pdo = new \PDO("sqlite:" . Configure::read('App.db'));
+            $db->_pdo = new \PDO('sqlite:' . Configure::read('App.db'));
         }
 
         return $db->_pdo;

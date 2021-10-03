@@ -20,6 +20,7 @@ class ComposerStaticInitb60965526bf89c4fb6e33b04b45aa818
             'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'SlevomatCodingStandard\\' => 23,
         ),
         'R' => 
         array (
@@ -33,6 +34,7 @@ class ComposerStaticInitb60965526bf89c4fb6e33b04b45aa818
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'PiPHP\\GPIO\\' => 11,
+            'PHPStan\\PhpDocParser\\' => 21,
         ),
         'M' => 
         array (
@@ -49,6 +51,14 @@ class ComposerStaticInitb60965526bf89c4fb6e33b04b45aa818
         array (
             'FastRoute\\' => 10,
             'FG\\' => 3,
+        ),
+        'D' => 
+        array (
+            'Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 55,
+        ),
+        'C' => 
+        array (
+            'CakePHP\\' => 8,
         ),
         'B' => 
         array (
@@ -74,6 +84,10 @@ class ComposerStaticInitb60965526bf89c4fb6e33b04b45aa818
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'SlevomatCodingStandard\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slevomat/coding-standard/SlevomatCodingStandard',
         ),
         'Ramsey\\Uuid\\' => 
         array (
@@ -104,6 +118,10 @@ class ComposerStaticInitb60965526bf89c4fb6e33b04b45aa818
         array (
             0 => __DIR__ . '/..' . '/piphp/gpio/src',
         ),
+        'PHPStan\\PhpDocParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -131,6 +149,14 @@ class ComposerStaticInitb60965526bf89c4fb6e33b04b45aa818
         'FG\\' => 
         array (
             0 => __DIR__ . '/..' . '/fgrosse/phpasn1/lib',
+        ),
+        'Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dealerdirect/phpcodesniffer-composer-installer/src',
+        ),
+        'CakePHP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cakephp/cakephp-codesniffer/CakePHP',
         ),
         'Brick\\Math\\' => 
         array (

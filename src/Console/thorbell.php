@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 require dirname(dirname(__DIR__)) . '/config/bootstrap.php';
 
 use App\Core\Configure;
@@ -10,15 +12,11 @@ use App\Model\Table\SettingsTable;
 use PiPHP\GPIO\GPIO;
 use PiPHP\GPIO\Pin\InputPinInterface;
 
-define('PIN_BUTTON', 23);
-define('SOUND_FILE', RESOURCES . 'doorbell.wav');
-define('SNAPSHOT_URL', 'http://localhost:9090/stream/snapshot.jpeg');
-
 // Create a GPIO object
 $gpio = new GPIO();
 
 // Retrieve pin 18 and configure it as an input pin
-$pin = $gpio->getInputPin(PIN_BUTTON);
+$pin = $gpio->getInputPin(Configure::read('Doorbel.gpio_pin'));
 
 // Configure interrupts for both rising and falling edges
 $pin->setEdge(InputPinInterface::EDGE_RISING);
@@ -30,8 +28,11 @@ $interruptWatcher = $gpio->createWatcher();
 $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
     Log::info('Pin ' . $pin->getNumber() . ' changed to: ' . $value);
 
-    $context = ['http' => [ 'method' => 'GET' ], 'ssl' => [ 'verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
-    $imageData = file_get_contents(SNAPSHOT_URL, false, stream_context_create($context));
+    $context = [
+        'http' => ['method' => 'GET' ],
+        'ssl' => [ 'verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true],
+    ];
+    $imageData = file_get_contents(Configure::read('Doorbel.snapshot_url'), false, stream_context_create($context));
 
     if ($imageData) {
         file_put_contents(PHOTOS . strftime('%Y%m%d%H%M%S', time()) . '.jpg', $imageData);
@@ -39,7 +40,7 @@ $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
 
     if ($value == 1) {
         // play ringback in background
-        exec('aplay -q ' . SOUND_FILE . '> /dev/null 2>/dev/null &');
+        exec('aplay -q ' . Configure::read('Doorbel.sound_file') . '> /dev/null 2>/dev/null &');
 
         $SettingsTable = new SettingsTable();
         $doorbellName = $SettingsTable->get('name')->value ?? Configure::read('App.defaultName');
@@ -50,7 +51,7 @@ $interruptWatcher->register($pin, function (InputPinInterface $pin, $value) {
         // fetch devices
         $devicesTable = new DevicesTable();
         $devices = $devicesTable->getDevices();
-        
+
         ApnsPush::sendNotification($devices, $doorbellName);
     }
 

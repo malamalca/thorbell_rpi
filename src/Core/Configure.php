@@ -1,12 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Core;
 
 class Configure
 {
-
     /**
-     * @var Config
+     * @var \App\Core\Config
      */
     private static $_instance = null;
 
