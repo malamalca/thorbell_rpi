@@ -110,8 +110,7 @@ sudo service nmbd restart
 ## UV4L
 ```
 curl http://www.linux-projects.org/listing/uv4l_repo/lpkey.asc | sudo apt-key add -
-deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main
-echo 'deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main' | sudo tee -a /etc/apt/sources.list
+echo "deb https://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main" | sudo tee /etc/apt/sources.list.d/uv4l.list
 sudo apt update
 sudo apt install uv4l uv4l-raspicam uv4l-raspicam-extras
 sudo apt install uv4l-webrtc
