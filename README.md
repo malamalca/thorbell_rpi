@@ -64,9 +64,9 @@ sudo apt-get -y install lighttpd
 
 sudo apt install php7.3 php7.3-fpm php7.3-cgi
 sudo lighttpd-enable-mod fastcgi-php
-sudo service lighttpd force-reload
+sudo apt-get install php7.3-curl php7.3-mbstring php7.3-pdo php7.3-sqlite3 php7.3-xml php7.3-intl php7.3-bcmath
 
-sudo apt-get install php7.3-curl php7.3-mbstring php7.3-pdo php7.3-sqlite3 php7.3-openssl php7.3-xml php7.3-intl php7.3-bcmath
+sudo service lighttpd force-reload
 
 sudo ln -s /home/pi/camera_wwwroot/ ./cam
 ```
@@ -88,6 +88,7 @@ sudo service lighttpd restart
 
 sudo cp /etc/pam.d/login /etc/pam.d/php
 sudo nano /etc/pam.d/php
+// add after "auth       requisite  pam_nologin.so"
    auth       sufficient /lib/arm-linux-gnueabihf/security/pam_unix.so shadow nodelay
    account    sufficient /lib/arm-linux-gnueabihf/security/pam_unix.so
    
