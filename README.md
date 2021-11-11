@@ -69,8 +69,14 @@ sudo apt-get install php7.3-curl php7.3-mbstring php7.3-pdo php7.3-sqlite3 php7.
 sudo service lighttpd force-reload
 
 sudo nano /etc/lighttpd/lighttpd.conf
+// add mod_rewirte
 // change document root
 server.document-root        = "/var/www/thorbell_rpi/webroot"
+// add at the end
+url.rewrite-once = (
+    "^/(css|files|img|js|stats)/(.*)$" => "/$1/$2",
+    "^/(.*)$" => "/index.php/$1"
+)
 
 ```
 
