@@ -48,6 +48,15 @@ sudo nano /etc/ssh/sshd_config
   #PermitRootLogin yes
 ```
 
+## Enable Raspicam
+```
+sudo nano /boot/config.txt
+// add folowing lines and reboot
+start_x=1
+gpu_mem=128
+```
+
+
 ## Lighttpd
 
 ```
@@ -109,7 +118,7 @@ sudo service nmbd restart
 
 ## UV4L
 ```
-curl http://www.linux-projects.org/listing/uv4l_repo/lpkey.asc | sudo apt-key add -
+curl https://www.linux-projects.org/listing/uv4l_repo/lpkey.asc | sudo apt-key add -
 echo "deb https://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main" | sudo tee /etc/apt/sources.list.d/uv4l.list
 sudo apt update
 sudo apt install uv4l uv4l-raspicam uv4l-raspicam-extras
@@ -117,8 +126,8 @@ sudo apt install uv4l-webrtc
 sudo service uv4l_raspicam restart
 sudo service uv4l_raspicam status
 sudo mv openssl.cnf /etc/uv4l/openssl.cnf
-sudo nano /etc/systemd/system/uv4l_raspicam.service 
-sudo systemctl daemon-reload && sudo service uv4l_raspicam start
+// not needed? sudo nano /etc/systemd/system/uv4l_raspicam.service 
+// not needed? sudo systemctl daemon-reload && sudo service uv4l_raspicam start
 openssl genrsa -out selfsign.key 2048 && openssl req -new -x509 -key selfsign.key -out selfsign.crt -sha256
 mv selfsign.* /etc/uv4l/
 sudo mv selfsign.* /etc/uv4l/
@@ -127,6 +136,10 @@ sudo service uv4l_raspicam start
 sudo service uv4l_raspicam restart
 ```
 ```
+// uv4l config
+sudo cp /etc/uv4l/uv4l-raspicam.conf /etc/uv4l/uv4l-raspicam.conf.default
+sudo nano /etc/uv4l/uv4l-raspicam.conf
+// edit uv4l config
 driver = raspicam
 auto-video_nr = yes
 frame-buffers = 4
