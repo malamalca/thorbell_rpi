@@ -3,7 +3,7 @@
 /logs/*
 /tmp/*
 /vendor/*
-/photos/*
+/photos/*.jpg
 /certs/*
 /db/*
 /vendor/*
