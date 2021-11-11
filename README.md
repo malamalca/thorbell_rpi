@@ -181,6 +181,7 @@ width = 640
 height = 480
 framerate = 15
 rotation = 180 #depending on your hardware setup
+server-option = --user-password=thrcam
 server-option = --port=9090
 server-option = --bind-host-address=0.0.0.0
 server-option = --use-ssl=no
@@ -191,7 +192,7 @@ server-option = --enable-webrtc-audio=yes
 server-option = --webrtc-vad=yes
 server-option = --webrtc-echo-cancellation=yes
 server-option = --webrtc-max-playout-delay=34
-server-option = --enable-www-server=yes
+server-option = --enable-www-server=no
 server-option = --www-root-path=/usr/share/uv4l/demos/doorpi/
 server-option = --www-index-file=index.html
 server-option = --www-port=8888
