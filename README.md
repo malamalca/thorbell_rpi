@@ -69,13 +69,19 @@ sudo apt-get install php7.3-curl php7.3-mbstring php7.3-pdo php7.3-sqlite3 php7.
 sudo service lighttpd force-reload
 
 sudo nano /etc/lighttpd/lighttpd.conf
-// add mod_rewirte
+
 // change document root
 server.document-root        = "/var/www/thorbell_rpi/webroot"
 // add at the end
+server.modules += ( "mod_rewrite", "mod_proxy" )
+$HTTP["url"] =~ "^/stream/video.mjpeg" {
+    server.stream-response-body = 1
+    proxy.server = ( "" => ( ( "host" => "127.0.0.1", "port" => "9090" ) ) )
+}
+
 url.rewrite-once = (
     "^/(css|files|img|js|stats)/(.*)$" => "/$1/$2",
-    "^/(.*)$" => "/index.php/$1"
+    "^/(?!stream[/])(.*)$" => "/index.php/$1"
 )
 
 ```
