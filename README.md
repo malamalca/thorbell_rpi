@@ -68,7 +68,22 @@ sudo apt-get install php7.3-curl php7.3-mbstring php7.3-pdo php7.3-sqlite3 php7.
 
 sudo service lighttpd force-reload
 
-sudo ln -s /home/pi/camera_wwwroot/ ./cam
+sudo nano /etc/lighttpd/lighttpd.conf
+
+// change document root
+server.document-root        = "/var/www/thorbell_rpi/webroot"
+// add at the end
+server.modules += ( "mod_rewrite", "mod_proxy" )
+$HTTP["url"] =~ "^/stream/video.mjpeg" {
+    server.stream-response-body = 1
+    proxy.server = ( "" => ( ( "host" => "127.0.0.1", "port" => "9090" ) ) )
+}
+
+url.rewrite-once = (
+    "^/(css|files|img|js|stats)/(.*)$" => "/$1/$2",
+    "^/(?!stream[/])(.*)$" => "/index.php/$1"
+)
+
 ```
 
 ### PAM for auth 
@@ -94,6 +109,23 @@ sudo nano /etc/pam.d/php
    
 sudo chgrp www-data /etc/shadow
 # for debug: cat /var/log/auth.log
+
+```
+
+## Website
+```
+sudo apt install git
+
+// to home dir
+wget -O composer-setup.php https://getcomposer.org/installer
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+cd /var/www/
+sudo git clone https://github.com/malamalca/thorbell_rpi
+sudo chown -R www-data:www-data thorbell_rpi/
+cd /var/www/thorbell_rpi
+sudo -u www-data composer --no-dev update
+cp /var/www/thorbell_rpi/config/app_default.php /var/www/throbell_rpi/config/app.php
 
 ```
 
